@@ -1,5 +1,4 @@
 ## Importing the Dependecies 
-
 from nltk.corpus import stopwords
 
 from nltk.stem.porter import PorterStemmer
@@ -31,10 +30,8 @@ data1.isnull().sum()
 data.fillna(' ', inplace=True)
 data1.fillna(' ', inplace=True)
 
-
 x = data
 x1 = data1
-
 
 x["content"] = x["author"]+' '+x["title"]
 x1["content"] = x1["author"]+' '+x1["title"]
@@ -58,7 +55,14 @@ x1["content"] = x1["content"].apply(stem)
 
 
 ##Converting Data From Text to Numerical
+X = x["content"].values
+X1 = x1["content"].values
+y = data["label"].values
 
+vt = TfidfVectorizer(max_features=9140)
+
+X = vt.fit_transform(X)
+X1 = vt.fit_transform(X1)
 
 
 ## Splitting the Data
@@ -78,15 +82,14 @@ y_pred = model.predict(X)
 
 accuracy_score = accuracy_score(y,y_pred)
 
-print(f"The accuracy score of the model is {accuracy_score}")
 
-##Prediction 
-X_new = X_test[3]
+x_new = x_test[3]
 
-prediction = model.predict(X_new)
-print(prediction)
+prediction = model.predict(x_new)
 
 if (prediction[0]==0):
-  print('The news is Real')
+  print('This news article is Real')
 else:
-  print('The news is Fake')
+  print('This news article is Fake')
+
+print(f"The accuracy of the model in identifying fake news is {accuracy_score}")
